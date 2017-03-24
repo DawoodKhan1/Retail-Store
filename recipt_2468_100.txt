@@ -1,0 +1,13 @@
+SALE Transaction: 2468
+Register: 100
+Transaction Date: 2017-01-03 17:11:11
+----------------------------------------
+Basic Android Phone
+	quantity: 3
+	price: $99.99
+	warranties: 2
+	subtotal: $319.97
+========================================
+Subtotal: $319.97
+Tax: $23.20
+TOTAL: $343.17

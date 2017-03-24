@@ -1,0 +1,21 @@
+cell phone,cp-111111,199.99,iPhone 4s,true,Apple,Verizon
+headphones,h-111111,249.99,Bose QC25,true,Bose,false
+headphones,h-111112   ,299.99,Bose QC35,true,Bose,true
+cell phone,111111,99.99,Basic Android Phone,false,Google,Verizon
+cell phone,   111112,99.99,Basic Android Phone,false,Google,AT&T
+headphones,a-111111,29.99,Apple Buds,false,Apple,false
+headphones,a-111111b,39.99,Apple Wireless Buds,false,Apple,true
+headphones,h-11111,29.95,Skull Candy Buds,false,Skull Candy,false
+Transaction,123456,100,2017-01-01 08:01:59,sale
+cp-111111,1,1
+a-111111b,1,0
+a-111111,1,0
+h-111112,1,1
+End Transaction
+Transaction,2468,15,2017-01-01 08:01:59,return
+a-111111b,1,0
+End Transaction
+Transaction,2468,100,2017-01-03 17:11:11,sale
+111112,2,1
+111112,1,1
+End Transaction

@@ -1,0 +1,4 @@
+Transaction 123456: 4 items totaling $664.90 on register 100
+Transaction 2468: 1 items totaling ($42.89) on register 15
+Transaction 2468: 3 items totaling $343.17 on register 100
+Total Sales: $965.18
