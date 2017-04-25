@@ -15,8 +15,8 @@ import java.util.Scanner;
 public class FileInputProcessor {
 	
 	String inputFileName = ""; 	// name of the file
-	File iFile = null; 			// file object is initially null
-	Scanner inputFile = null;   // scanner object to go through the input file
+	File iFile = null; 		// file object is initially null
+	Scanner inputFile = null;   	// scanner object to go through the input file
 	
 	/**
 	 * glorified accessor to hasNextLine()
@@ -52,10 +52,10 @@ public class FileInputProcessor {
 		}// end if
 		
 		for(int i = 0; i < s.length ; i++){
-			s[i] = s[i].trim(); 				// remove extra white space
+			s[i] = s[i].trim(); 			// remove extra white space
 		}
 		
-		return s; 								// return the array of strings
+		return s; 					// return the array of strings
 	}
 	
 	public void closeInputFile(){
