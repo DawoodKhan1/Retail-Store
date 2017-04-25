@@ -13,3 +13,5 @@ The while loop runs until it reaches the end of the transaction denoted by "End 
 Back in main after the transaction is done being read it generates a receipt in the form of an output file by the method generateReceipt. It also uses a string builder to keep track of the transaction summaries and running total.
 
 After the input file has been read, it then outputs to the console and output file the transaction summaries and total amount sold.
+
+In terms of exception handling, right now it handles if there is an exception in scanning the item, reading from the input file, and exception handling in the case where input/output files are not found/created.
