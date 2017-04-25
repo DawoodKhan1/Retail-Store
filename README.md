@@ -2,6 +2,8 @@
 This program simulates the POS system at a retail store.
 This program uses OOP in order to take in information from an input file and then process transaction generating their own seperate receipts as output files as well as transaction summaries and total sales. 
 
+The files are of a few types. The .java files are the source code, the .docx in the assignment instructions, and the .txt are program input/output.
+
 A more detailed explanation is that first the RetailStoreDriver opens the input file using FileInputProcessor and the output file using FileOutputProcessor. It then opens a ProductCatalog object to store all inventory items. 
 
 Next it processes the input file through a loop until it reaches the EOF marker at the end of the file. It processes the file by splitting a line by a comma which the method processLine() does. Next is a switch depending on if it is a product or transaction. If it is a product add it to the ProductCatalog object using RetailTransactionParser to get the information from the string array. Both Headphones and CellPhone inherit of the Product Class.
