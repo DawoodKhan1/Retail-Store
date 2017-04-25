@@ -23,11 +23,16 @@ public class RetailStoreDriver {
      * This function takes a RetailTransaction through an input, initializes it, and uses 
      * RetailTransaction to do a transaction and catalog to get products and not scan
      * invalid items which are defined as an invalid productID.
+     * 
      * @param inputFile		Where input is coming in from handled by FileInputProcessor
      * @param transactionFields The first line of the transaction details like sale/return
      * @param catalog 	What are the products being sold currently
      * @return An initialized RetailTransaction object and the inputFile being alterred and points to
      * after End Transaction.
+     * Also will display an error message if an invalid scanned item is scanned before the 
+     * associated receipt similar to if the fields were not formatted correctly.
+     * @throws NumberFormatException
+     * @throws InvalidScannedItemException
      */
     private static RetailTransaction readTransaction(FileInputProcessor inputFile,
                                                      String[] transactionFields,
@@ -53,8 +58,38 @@ public class RetailStoreDriver {
                  *  parsing the quantity and number of warranties.
                  */
                 if(!(product == null)){
-                	transaction.scanItem(product,  Integer.parseInt(productFields[1]), 
-                			Integer.parseInt(productFields[2]), catalog);
+                	/*
+                	 * Try catch block to catch formatting errors with parsing ints and if 
+                	 * the added product is not a valid scanned item.
+                	 */
+                	try {
+                		// the fields are the product, quantity, and number of warranties.
+						transaction.scanItem(product,  Integer.parseInt(productFields[1]), 
+								Integer.parseInt(productFields[2]), catalog);
+						
+					} catch (NumberFormatException e) {
+						// if parsing failed, then trying to re output them is pointless
+						StringBuilder errorMsg = new StringBuilder();
+						
+						errorMsg.append(
+								"The inputFile field(s) were not in the correct format for item: ");
+						errorMsg.append(product.getProductID());
+						
+						System.out.println(errorMsg);
+						
+					} catch (InvalidScannedItemException e) {
+						// throw an error given product id and associated quantities
+						StringBuilder errorMsg = new StringBuilder();
+						
+						errorMsg.append("The item: ");
+						errorMsg.append(product.getProductID());
+						errorMsg.append("\nis not a valid with quantity: ");
+						errorMsg.append(Integer.parseInt(productFields[1]));
+						errorMsg.append(" and number of warranties: ");
+						errorMsg.append(Integer.parseInt(productFields[2]));
+						
+						System.out.println(errorMsg);
+					}
                 }
             }
         }

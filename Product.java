@@ -63,5 +63,29 @@ public class Product {
 	public void setProductID(String productID){
 		this.productID = productID;
 	}	
+	
+	/**
+	 * This method returns a string containing a string with all the base
+	 * product information contained within it.
+	 * @return The string with all the basic product info on seperate lines
+	 */
+	public String getProductInfo(){
+		// will hold basic product information
+		StringBuilder productInfo = new StringBuilder();
+		
+		productInfo.append(this.getProductName());
+		productInfo.append("\n");
+		productInfo.append(this.getProductID());
+		productInfo.append("\n");
+		productInfo.append(this.getPrice());
+		productInfo.append("\n");
+		productInfo.append(this.getBrand());
+		productInfo.append("\n");
+		productInfo.append(this.getWarrantyEligible());
+		productInfo.append("\n");
+
+
+		return productInfo.toString();// convert to string
+	}
 }
 

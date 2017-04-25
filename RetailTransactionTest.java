@@ -7,7 +7,9 @@
  * Description: This class tests 3 methods of the Retail Transaction class.
  * Those three methods are scanItem(), calculateTransactionTotal(), getNumberOfProductsSold().
  * It tests to make sure products are not added to a transaction when it shouldn't be, make sure
- * it works for sale, returns, large transactions, and empty ones.
+ * it works for sale, returns, large transactions, empty ones, as well as transactions with
+ * invalid items. Also no need for try catch because that is no what we are testing here at 
+ * least for most methods.
  * 
  */
 import static org.junit.Assert.*;
@@ -17,7 +19,7 @@ public class RetailTransactionTest {
 
 	// ----------- TESTING scanItem() -----------
 	@Test
-	public void test_scanItem_CellPhone() {
+	public void test_scanItem_CellPhone() throws InvalidScannedItemException {
 		// GIVEN //
 		RetailTransaction sut = new RetailTransaction(1, 100, "2017-01-01 08:01:59", 
 				TransactionTypeEnum.SALE);
@@ -31,6 +33,7 @@ public class RetailTransactionTest {
 		
 		// WHEN //
 		sut.scanItem(cellphone, 1, 1, catalog);
+
 		double total = sut.calculateTransactionTotal();
 		
 		// THEN //
@@ -40,7 +43,7 @@ public class RetailTransactionTest {
 	}
 	
 	@Test
-	public void test_scanItem_HeadPhones() {
+	public void test_scanItem_HeadPhones() throws InvalidScannedItemException {
 		// GIVEN //
 		RetailTransaction sut = new RetailTransaction(1, 100, "2017-01-01 08:01:59", 
 				TransactionTypeEnum.SALE);
@@ -54,6 +57,7 @@ public class RetailTransactionTest {
 		
 		// WHEN //
 		sut.scanItem(headphones, 1, 0, catalog);
+		
 		double total = sut.calculateTransactionTotal();
 		
 		// THEN //
@@ -62,8 +66,18 @@ public class RetailTransactionTest {
 		assertTrue(cost == total);
 	}
 	
+	/**
+	 * This test function tests all types of invalid products:
+	 * 1. the product is not in the product catalog.
+	 * 2. the quantity is invalid.
+	 * 3. the number of warranties is greater than the quantity
+	 * 4. there are warranties for an item that is ineligible for warranties
+	 * We are surrounding it with try catch blocks to make sure errors are being
+	 * thrown and RetailTransaction object is correct.
+	 * @throws InvalidScannedItemException 
+	 */
 	@Test
-	public void test_scanItem_InvalidProduct() {
+	public void test_scanItem_InvalidProductTypes() {
 		// GIVEN //
 		RetailTransaction sut = new RetailTransaction(1, 100, "2017-01-01 08:01:59", 
 				TransactionTypeEnum.SALE);
@@ -73,6 +87,11 @@ public class RetailTransactionTest {
 		cellphone.setWarrantyEligible(true);
 		cellphone.setProductID("111");
 		
+		CellPhone cellphone2 = new CellPhone();
+		cellphone2.setPrice(50.0);
+		cellphone2.setWarrantyEligible(false);
+		cellphone2.setProductID("1");
+		
 		Headphones headphones = new Headphones();
 		headphones.setPrice(50.0);
 		headphones.setWarrantyEligible(false);
@@ -80,9 +99,36 @@ public class RetailTransactionTest {
 		
 		ProductCatalog catalog = new ProductCatalog();
 		catalog.addProduct(cellphone); 		// adding cellphone object
-		
+		catalog.addProduct(cellphone2);     // adding cellphone object 2
+catalog.displayProductCatalog();
+
 		// WHEN //
-		sut.scanItem(headphones, 1, 0, catalog); // scanning headphone object which is invalid 
+
+		try {
+			sut.scanItem(headphones, 1, 0, catalog);// 1. did not add to catalog
+		} catch (InvalidScannedItemException e) {}
+		
+		try {	
+			sut.scanItem(cellphone, -9, 2, catalog);// 2. invalid quantity
+		} catch (InvalidScannedItemException e) {}
+		try {
+			sut.scanItem(cellphone, 0, 2, catalog); // 2. invalid quantity
+		} catch (InvalidScannedItemException e) {}
+		try {
+			sut.scanItem(cellphone, -99999, 2, catalog);// 2. invalid quantity
+		} catch (InvalidScannedItemException e) {}
+		
+		try {
+			sut.scanItem(cellphone, 1, 2, catalog); // 3. numberOfWarranties > quantity
+		} catch (InvalidScannedItemException e) {}
+		try {
+			sut.scanItem(cellphone, 50, 51, catalog); // 3. numberOfWarranties > quantity
+		} catch (InvalidScannedItemException e) {}
+			
+		try {
+			sut.scanItem(cellphone2, 1, 1, catalog); // 4. not warranty eligible
+		} catch (InvalidScannedItemException e) {}
+
 		double total = sut.calculateTransactionTotal();
 		
 		// THEN //
@@ -92,7 +138,7 @@ public class RetailTransactionTest {
 	}
 	
 	@Test
-	public void test_scanItem_Return() {
+	public void test_scanItem_Return() throws InvalidScannedItemException {
 		// GIVEN //
 		RetailTransaction sut = new RetailTransaction(1, 100, "2017-01-01 08:01:59", 
 				TransactionTypeEnum.RETURN);
@@ -106,6 +152,8 @@ public class RetailTransactionTest {
 		
 		// WHEN //
 		sut.scanItem(cellphone, 2, 2, catalog);
+
+		
 		double total = sut.calculateTransactionTotal();
 		
 		// THEN //
@@ -117,7 +165,7 @@ public class RetailTransactionTest {
 	
 	// ----------- TESTING calculateTransactionTotal() -----------
 	@Test
-	public void test_calculateTransactionTotal_Return() {
+	public void test_calculateTransactionTotal_Return() throws InvalidScannedItemException {
 		// GIVEN //
 		RetailTransaction sut = new RetailTransaction(1, 100, "2017-01-01 08:01:59", 
 				TransactionTypeEnum.RETURN);
@@ -130,7 +178,9 @@ public class RetailTransactionTest {
 		catalog.addProduct(cellphone);
 		
 		// WHEN //
+
 		sut.scanItem(cellphone, 5, 3, catalog);
+
 		double total = sut.calculateTransactionTotal();
 		
 		// THEN //
@@ -141,7 +191,7 @@ public class RetailTransactionTest {
 	}
 
 	@Test
-	public void test_calculateTransactionTotal_Sale() {
+	public void test_calculateTransactionTotal_Sale() throws InvalidScannedItemException {
 		// GIVEN //
 		RetailTransaction sut = new RetailTransaction(1, 100, "2017-01-01 08:01:59", 
 				TransactionTypeEnum.SALE);
@@ -153,13 +203,13 @@ public class RetailTransactionTest {
 		
 		Headphones headphones = new Headphones();
 		headphones.setPrice(50.0);
-		headphones.setWarrantyEligible(false);
+		headphones.setWarrantyEligible(true);
 		headphones.setProductID("1111");
 		
 		// invaild product to make sure it doesn't get added to transaction
 		Headphones headphones2 = new Headphones();
 		headphones2.setPrice(50.0);
-		headphones2.setWarrantyEligible(false);
+		headphones2.setWarrantyEligible(true);
 		headphones2.setProductID("100");
 		
 		ProductCatalog catalog = new ProductCatalog();
@@ -167,9 +217,11 @@ public class RetailTransactionTest {
 	 	catalog.addProduct(headphones);
 	 	
 		// WHEN //
-		sut.scanItem(cellphone, 5, 3, catalog);
+
+		sut.scanItem(cellphone, 5, 3, catalog); 
 	 	sut.scanItem(headphones, 4, 2, catalog);
 		sut.scanItem(headphones2, 10, 10, catalog); // shoudn't affect transaction at all
+
 		double total = sut.calculateTransactionTotal();
 		
 		// THEN //
@@ -181,7 +233,7 @@ public class RetailTransactionTest {
 	}
 	
 	@Test
-	public void test_calculateTransactionTotal_LargeTransaction() {
+	public void test_calculateTransactionTotal_LargeTransaction() throws InvalidScannedItemException {
 		// GIVEN //
 		RetailTransaction sut = new RetailTransaction(1, 100, "2017-01-01 08:01:59", 
 				TransactionTypeEnum.SALE);
@@ -193,13 +245,13 @@ public class RetailTransactionTest {
 		
 		Headphones headphones = new Headphones();
 		headphones.setPrice(50.0);
-		headphones.setWarrantyEligible(false);
+		headphones.setWarrantyEligible(true);
 		headphones.setProductID("1111");
 		
 		// invaild product to make sure it doesn't get added to transaction
 		Headphones headphones2 = new Headphones();
 		headphones2.setPrice(50.0);
-		headphones2.setWarrantyEligible(false);
+		headphones2.setWarrantyEligible(true);
 		headphones2.setProductID("100");
 		
 		ProductCatalog catalog = new ProductCatalog();
@@ -207,8 +259,9 @@ public class RetailTransactionTest {
 	 	catalog.addProduct(headphones);
 	 	
 		// WHEN //
+
 		sut.scanItem(cellphone, 50, 39, catalog);
-	 	sut.scanItem(headphones, 45, 22, catalog);
+		sut.scanItem(headphones, 45, 22, catalog);		
 
 		double total = sut.calculateTransactionTotal();
 		
@@ -235,7 +288,9 @@ public class RetailTransactionTest {
 		catalog.addProduct(cellphone);
 		
 		// WHEN //
-		sut.scanItem(cellphone, 0, 0, catalog);
+		try {
+			sut.scanItem(cellphone, 0, 0, catalog);
+		} catch (InvalidScannedItemException e) {}
 		
 		int quantity = sut.getNumberOfProductsSold();
 		
@@ -244,7 +299,7 @@ public class RetailTransactionTest {
 	}
 	
 	@Test
-	public void test_getNumberofProductsSold_13() {
+	public void test_getNumberofProductsSold_13() throws InvalidScannedItemException {
 		// GIVEN //
 		RetailTransaction sut = new RetailTransaction(1, 100, "2017-01-01 08:01:59", 
 				TransactionTypeEnum.RETURN);
@@ -257,7 +312,10 @@ public class RetailTransactionTest {
 		catalog.addProduct(cellphone);
 		
 		// WHEN //
+		
 		sut.scanItem(cellphone, 13, 0, catalog);
+
+		
 		int quantity = sut.getNumberOfProductsSold();
 		
 		// THEN //
@@ -265,7 +323,7 @@ public class RetailTransactionTest {
 	}
 	
 	@Test
-	public void test_getNumberofProductsSold_999() {
+	public void test_getNumberofProductsSold_999() throws InvalidScannedItemException {
 		// GIVEN //
 		RetailTransaction sut = new RetailTransaction(1, 100, "2017-01-01 08:01:59", 
 				TransactionTypeEnum.RETURN);
@@ -283,8 +341,11 @@ public class RetailTransactionTest {
 		headphones.setProductID("1111");
 		catalog.addProduct(headphones);
 		// WHEN //
+
 		sut.scanItem(cellphone, 500, 0, catalog);
 		sut.scanItem(headphones, 499, 0, catalog);
+
+		
 		int quantity = sut.getNumberOfProductsSold();
 		
 		// THEN //	

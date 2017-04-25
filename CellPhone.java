@@ -19,4 +19,22 @@ public class CellPhone extends Product {
 	public void setCarrier(String carrier){
 		this.carrier = carrier;
 	}
+	
+	/**
+	 * This method returns a string containing a string with all the product
+	 * information about it namely base product information with 
+	 * Carrier.
+	 * @return The string with all the basic product info on seperate lines
+	 */
+	@Override
+	public String getProductInfo(){
+		// will hold basic product information
+		StringBuilder productInfo = new StringBuilder();
+		
+		productInfo.append(super.getProductInfo());// get base info on product
+		productInfo.append(this.getCarrier());
+		productInfo.append("\n");
+
+		return productInfo.toString();// convert to string
+	}
 }

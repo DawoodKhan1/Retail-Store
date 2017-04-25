@@ -76,17 +76,29 @@ public class RetailTransaction {
 	 * @param quantity 	   How much of the item is the customer buying
 	 * @param numberOfWarranties How much warranties, cannot exceed quantity
 	 * @param catalog    List of all products in the catalog of the store
+	 * @throws InvalidScannedItemException 
 	 */
 	public void scanItem(Product itemScanned, int quantity, int numberOfWarranties, 
-			ProductCatalog catalog){
-		int i = 0;
+			ProductCatalog catalog) throws InvalidScannedItemException{
+		
+		/* test to see if it is an invalid scanned item and if so, thrown the
+		 * exception that it is an invalid scanned exception.
+		 * Could be quantity is invalid, numberOfWarranties because it is greater
+		 * than quantity or that the item is ineligible for warranty
+		 */
+		if(quantity <= 0 || quantity < numberOfWarranties || 
+				(!itemScanned.getWarrantyEligible() && numberOfWarranties >= 1) ){
+			throw new InvalidScannedItemException();
+		}
+		
+		int index = 0; 					// the index in lineItem of item we are interested in
 		boolean found = false;
 		// Implements a linear search to see if the product in in lineItems already
-		while(i < lineItems.size() && !found){
+		for(int i = 0; i < lineItems.size() && !found; i++){
 			if(lineItems.get(i).getProduct().getProductID().equals(itemScanned.getProductID())){
 				found = true;
+				index = i; 				// if true set the index so we can use for later
 			}
-			i++;
 		}
 			
 		Product product = catalog.findProductbyID(itemScanned.getProductID());
@@ -101,9 +113,9 @@ public class RetailTransaction {
 				lineItems.add(tempItem);
 			}
 			else {
-				lineItems.get(i-1).setQuantity(lineItems.get(i-1).getQuantity() + quantity);
-				lineItems.get(i-1).setNumberOfWarranties(lineItems.get(i - 1).getNumberofWarranties() +
-						lineItems.get(i - 1).getNumberofWarranties());
+				lineItems.get(index).setQuantity(lineItems.get(index).getQuantity() + quantity);
+				lineItems.get(index).setNumberOfWarranties(lineItems.get(index).getNumberofWarranties() +
+						lineItems.get(index).getNumberofWarranties());
 			
 			}
 		}
@@ -138,7 +150,7 @@ public class RetailTransaction {
 		double subtotal = 0;
 		double totalSubtotal = 0;
 		FileOutputProcessor outputFile = new FileOutputProcessor();
-		outputFile.openOutputFile("recipt_" + transactionID + "_" + 
+		outputFile.openOutputFile("receipt_" + transactionID + "_" + 
 		registerID + ".txt"); // each receipt will be its own output file
 		StringBuilder receipt = new StringBuilder();
 		
@@ -181,7 +193,8 @@ public class RetailTransaction {
 			totalSubtotal += subtotal;
 		}
 		// if it is a return, the amount must be a negative value
-		totalSubtotal = (TransactionTypeEnum.RETURN == transactionType) ? -subtotal : subtotal;
+		totalSubtotal = (TransactionTypeEnum.RETURN == transactionType) ? 
+				-totalSubtotal : totalSubtotal;
 
 		/*
 		 * After the loop, given totalSubtotal, it is possible to calculate taxes and 
