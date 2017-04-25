@@ -1,0 +1,28 @@
+SALE Transaction: 123456
+Register: 100
+Transaction Date: 2017-01-01 08:01:59
+----------------------------------------
+iPhone 4s
+	quantity: 1
+	price: $199.99
+	warranties: 1
+	subtotal: $219.99
+Apple Wireless Buds
+	quantity: 1
+	price: $39.99
+	warranties: 0
+	subtotal: $39.99
+Apple Buds
+	quantity: 1
+	price: $29.99
+	warranties: 0
+	subtotal: $29.99
+Bose QC35
+	quantity: 1
+	price: $299.99
+	warranties: 1
+	subtotal: $329.99
+========================================
+Subtotal: $329.99
+Tax: $23.92
+TOTAL: $353.91
