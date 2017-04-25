@@ -88,6 +88,7 @@ public class RetailTransaction {
 		 */
 		if(quantity <= 0 || quantity < numberOfWarranties || 
 				(!itemScanned.getWarrantyEligible() && numberOfWarranties >= 1) ){
+System.out.println(itemScanned.getProductInfo());
 			throw new InvalidScannedItemException();
 		}
 		

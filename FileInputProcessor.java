@@ -31,10 +31,15 @@ public class FileInputProcessor {
 	 * @param fileName What the name of the input file is
 	 * @throws FileNotFoundException if can't find input file stop processing
 	 */
-	public void openInputFile(String fileName) throws FileNotFoundException {
+	public void openInputFile(String fileName) {
 		inputFileName = fileName;
 		iFile = new File(inputFileName);
-		inputFile = new Scanner(iFile);
+		try {
+			inputFile = new Scanner(iFile);
+		} catch (FileNotFoundException e) {
+			System.out.println("Error. The input file " + fileName + " was not found.");
+			System.exit(0);
+		}
 	}// end openInputFile()
 	
 	// this function takes in a line from input file and formats the first element

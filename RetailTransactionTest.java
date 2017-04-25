@@ -100,7 +100,6 @@ public class RetailTransactionTest {
 		ProductCatalog catalog = new ProductCatalog();
 		catalog.addProduct(cellphone); 		// adding cellphone object
 		catalog.addProduct(cellphone2);     // adding cellphone object 2
-catalog.displayProductCatalog();
 
 		// WHEN //
 

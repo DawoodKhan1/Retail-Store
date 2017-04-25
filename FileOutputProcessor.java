@@ -21,9 +21,14 @@ public class FileOutputProcessor {
 	 * @param fileName  name of output file
 	 * @throws FileNotFoundException if computer cannot make output files stop immediately
 	 */
-	public void openOutputFile(String fileName) throws FileNotFoundException {
+	public void openOutputFile(String fileName) {
 		outputFileName = fileName;
-		outputFile = new PrintWriter(outputFileName);
+		try {
+			outputFile = new PrintWriter(outputFileName);
+		} catch (FileNotFoundException e) {
+			System.out.println("Error in creating the output file " + fileName + ".");
+			System.exit(0);
+		}
 	}// end openOutputFile
 	
 	public void printLine(String text){
